@@ -1,12 +1,12 @@
 Package: packagelist
 Title: Functions to save a list of all installed packages and then install them.
-Version: 0.1
+Version: 0.2
 Authors@R: person("First", "Last", email = "first.last@example.com",
                   role = c("aut", "cre"))
 Description: What the package does (one paragraph)
 Depends: R (>= 3.1.0)
-License: What license is it under?
+License: GPL-3
 LazyData: true
 Imports:
-  utils
+  jsonlite
 RoxygenNote: 6.0.1

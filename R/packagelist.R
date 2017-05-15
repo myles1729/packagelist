@@ -1,6 +1,18 @@
-
+#' packagelist
+#'
+#' @description
+#' A package for saving and syncing lists of packages between systems
+#'
+#' @details
+#' The \emph{packagelist} function allows the saving of a list of all currently installed packages (excluding base packages) with \emph{savepackages} and a function \emph{syncpackages} to install all of those packages from a saved list.
+#' There are also functions to return the current Dropbox directory, to count the number of packages "out of sync" and to list these packages.
+#' By default, all lists are saved as RDS files in the current working directory, but a different directory can be passed as an argument.
+#'
+#' @docType package
+#' @name packagelist
 
 options(stringsAsFactors = FALSE)
+
 
 savewindowspackagelist <- function()
 {
@@ -28,8 +40,8 @@ updatewindowspackages <- function()
   if(length(ip)==0) {
     cat("No packages to update")
   } else {
-  utils::install.packages(ip,repos = c(CRAN = "http://cran.rstudio.com"))
-  cat(paste("Updated",length(ip),"packages"))
+    utils::install.packages(ip,repos = c(CRAN = "http://cran.rstudio.com"))
+    cat(paste("Updated",length(ip),"packages"))
   }
 }
 
@@ -43,63 +55,5 @@ updatemacpackages <- function()
   } else {
     utils::install.packages(ip,repos = c(CRAN = "http://cran.rstudio.com"))
     cat(paste("Updated",length(ip),"packages"))
-  }
-}
-
-#' @export
-savepackages <- function(workdir = getwd()) {
-  setwd(workdir)
-  if(Sys.info()['sysname']=="Windows") {
-    savewindowspackagelist()
-  } else if(Sys.info()['sysname']=="Darwin") {
-    savemacpackagelist()
-  } else {
-    stop("Error syncing packagelist: Sysname is not Windows or Darwin")
-  }
-}
-
-#' @export
-syncpackages <- function(workdir = getwd()) {
-  setwd(workdir)
-  if(Sys.info()['sysname']=="Windows") {
-    savewindowspackagelist()
-    updatewindowspackages()
-  } else if(Sys.info()['sysname']=="Darwin") {
-    savemacpackagelist()
-    updatemacpackages()
-  } else {
-    stop("Error syncing packagelist: Sysname is not Windows or Darwin")
-  }
-}
-
-#' @export
-countpackdiff <- function(workdir = getwd()) {
-  setwd(workdir)
-  ip.windows <- readRDS("windowspackagelist.rds")
-  ip.mac <- readRDS("macpackagelist.rds")
-  ipdiff.mac <- setdiff(ip.windows,ip.mac)
-  ipdiff.windows <- setdiff(ip.mac,ip.windows)
-  if(Sys.info()['sysname']=="Windows") {
-    return(length(ipdiff.windows))
-  } else if(Sys.info()['sysname']=="Darwin") {
-    return(length(ipdiff.mac))
-  } else {
-    stop("Error syncing packagelist: Sysname is not Windows or Darwin")
-  }
-}
-
-#' @export
-listpackdiff <- function(workdir = getwd()) {
-  setwd(workdir)
-  ip.windows <- readRDS("windowspackagelist.rds")
-  ip.mac <- readRDS("macpackagelist.rds")
-  ipdiff.mac <- setdiff(ip.windows,ip.mac)
-  ipdiff.windows <- setdiff(ip.mac,ip.windows)
-  if(Sys.info()['sysname']=="Windows") {
-    return((ipdiff.windows))
-  } else if(Sys.info()['sysname']=="Darwin") {
-    return((ipdiff.mac))
-  } else {
-    stop("Error syncing packagelist: Sysname is not Windows or Darwin")
   }
 }
